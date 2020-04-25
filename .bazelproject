@@ -1,0 +1,11 @@
+directories:
+  .
+
+derive_targets_from_directories: true
+
+workspace_type: java
+
+java_language_level: 11
+
+build_flags:
+  --test_output=all
