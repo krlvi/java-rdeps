@@ -6,7 +6,7 @@ public class TypeDescriptors {
     private TypeDescriptors() {}
 
     public static String parseFrom(List<String> params, String ret) {
-        var sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         sb.append("(");
         for (String p : params) {
             sb.append(toTypeDesc(p));
