@@ -1,5 +1,6 @@
 package com.videlov.rdeps;
 
+import java.io.InputStream;
 import org.apache.commons.cli.CommandLine;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.concurrent.AsSynchronizedGraph;
@@ -31,9 +32,9 @@ public class Rdeps {
     public void work(String targetClass, String methodName, String methodDesc, CommandLine cmd) {
         Graph<String, DefaultEdge> graph =
                 new AsSynchronizedGraph<>(new DefaultDirectedGraph<>(DefaultEdge.class));
-        var nodeName = String.join(".", targetClass, methodName);
+        String nodeName = String.join(".", targetClass, methodName);
         graph.addVertex(nodeName);
-        var targetMethod = new Method(methodName, methodDesc);
+        Method targetMethod = new Method(methodName, methodDesc);
         findCallingMethodsInJar(targetClass, targetMethod, graph, nodeName);
         while (!tasks.isEmpty()) {
             tasks.poll().join();
@@ -54,17 +55,17 @@ public class Rdeps {
             String parent) {
 
         List<Caller> cs = new ArrayList<>();
-        var cv = new ClassAnalyzer(targetClass, targetMethod, cs);
+        ClassAnalyzer cv = new ClassAnalyzer(targetClass, targetMethod, cs);
 
         Enumeration<JarEntry> entries = jarFile.entries();
 
         while (entries.hasMoreElements()) {
-            var entry = entries.nextElement();
+            JarEntry entry = entries.nextElement();
 
             if (entry.getName().endsWith(".class") && entry.getName().startsWith(prefix)) {
                 try {
-                    var stream = new BufferedInputStream(jarFile.getInputStream(entry), 1024);
-                    var reader = new ClassReader(stream);
+                    InputStream stream = new BufferedInputStream(jarFile.getInputStream(entry), 1024);
+                    ClassReader reader = new ClassReader(stream);
                     reader.accept(cv, 0);
                     stream.close();
                 } catch (IOException e) {
@@ -79,7 +80,7 @@ public class Rdeps {
             tasks.add(
                     CompletableFuture.runAsync(
                             () -> {
-                                var name =
+                                String name =
                                         String.join(".", c.getClassName(), c.getMethodName())
                                                 + ":"
                                                 + c.getLine();

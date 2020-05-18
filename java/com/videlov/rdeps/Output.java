@@ -8,8 +8,8 @@ public class Output {
     private Output() {}
 
     public static void printAsDot(Graph<String, DefaultEdge> g) {
-        var de =
-                new DOTExporter<String, DefaultEdge>(
+        DOTExporter<String, DefaultEdge> de =
+                new DOTExporter<>(
                         x -> {
                             StringBuilder sb = new StringBuilder("\"");
                             String s = x;
